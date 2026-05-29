@@ -49,8 +49,8 @@
                         :style="{ backgroundColor: '{{ $color }}' }"
                     ></button>
                 @endforeach
+                <input type="hidden" id="color" name="color" :value="selectedColor">
             </div>
-            <input type="hidden" id="color" name="color" x-bind:value="selectedColor">
             @error('color')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
