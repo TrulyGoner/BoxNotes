@@ -1,59 +1,182 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Заметки — веб-приложение для управления заметками
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Выбор стека: Laravel
 
-## About Laravel
+### Обоснование
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Laravel** выбран как основной фреймворк потому что:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **ORM Eloquent** — встроенная поддержка моделей, relations и query builder с защитой от SQL-injection
+2. **Миграции из коробки** — версионирование схемы БД встроено в фреймворк
+3. **Authorization Policies** — встроенные Policy классы для проверки прав доступа на каждый CRUD операцию
+4. **Blade шаблоны** — простой синтаксис, встроенная защита от XSS ({{ }} экранирует вывод)
+5. **CSRF защита** — автоматическая генерация и проверка CSRF токенов
+6. **Laravel Breeze** — готовая система аутентификации (register, login, logout)
+7. **Встроенная валидация** — простой и читаемый синтаксис валидации Request объектов
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Frontend**: Blade + Tailwind CSS + Alpine.js
+- Blade генерирует HTML на сервере, нет SPA сложности
+- Tailwind CSS для быстрой стилизации (utility-first подход)
+- Alpine.js (3.13) для минимальной интерактивности (toggle pin без перезагрузки)
 
-## Learning Laravel
+**БД**: MySQL 8 (или SQLite для локального развития)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Локальный запуск
 
-## Laravel Sponsors
+### Требования
+- PHP 8.2+
+- Composer
+- Node.js + npm
+- MySQL 8 (опционально, можно использовать SQLite)
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Инструкция
 
-### Premium Partners
+1. **Клонирование и зависимости**
+   ```bash
+   git clone <repo>
+   cd notes
+   cp .env.example .env
+   composer install
+   npm install
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Ключ приложения**
+   ```bash
+   php artisan key:generate
+   ```
 
-## Contributing
+3. **БД (MySQL)**
+   ```bash
+   # В .env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=notes
+   DB_USERNAME=root
+   DB_PASSWORD=
+   
+   # Создать БД
+   mysql -u root -e "CREATE DATABASE notes CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **БД (SQLite для dev)**
+   ```bash
+   # В .env
+   DB_CONNECTION=sqlite
+   DB_DATABASE=database/database.sqlite
+   
+   # Создать файл
+   touch database/database.sqlite
+   ```
 
-## Code of Conduct
+5. **Миграции и сидинг**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+6. **Сборка фронтенда**
+   ```bash
+   npm run build
+   # или для development
+   npm run dev
+   ```
 
-## Security Vulnerabilities
+7. **Запуск сервера**
+   ```bash
+   php artisan serve
+   ```
+   
+   Приложение доступно на `http://localhost:8000`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+8. **Учётная запись для тестирования**
+   - Email: `test@example.com`
+   - Password: `password` (смотри DatabaseSeeder)
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Архитектурные решения
+
+### Структура проекта
+
+```
+app/
+  ├── Http/Controllers/NoteController.php       # CRUD логика
+  ├── Models/
+  │   ├── User.php                              # Модель пользователя
+  │   └── Note.php                              # Модель заметки
+  └── Policies/NotePolicy.php                   # Authorization policy
+database/
+  └── migrations/
+      └── 2024_01_01_000000_create_notes_table.php  # Schema
+routes/
+  ├── web.php                                   # Web маршруты
+  └── auth.php                                  # Auth маршруты (от Breeze)
+resources/
+  ├── views/
+  │   ├── layouts/app.blade.php                 # Main layout
+  │   └── notes/
+  │       ├── index.blade.php                   # List view
+  │       ├── create.blade.php                  # Create form
+  │       └── edit.blade.php                    # Edit form
+  ├── js/app.js                                 # Alpine.js init
+  └── css/app.css                               # Tailwind CSS
+```
+
+### Маршруты (все защищены middleware `auth`)
+
+```
+GET    /notes                  → index (list notes)
+GET    /notes/create          → create (show form)
+POST   /notes                 → store (save new)
+GET    /notes/{id}/edit       → edit (show edit form)
+POST   /notes/{id}            → update (save changes)
+POST   /notes/{id}/delete     → destroy (delete)
+POST   /notes/{id}/toggle-pin → togglePin (AJAX)
+```
+
+### Безопасность
+
+1. **SQL Injection** — Eloquent использует prepared statements
+2. **XSS** — Blade `{{ }}` автоматически экранирует вывод
+3. **CSRF** — встроенная защита через middleware (token в форме и meta тег)
+4. **Authorization** — Policy `NotePolicy` проверяет `user_id` на каждый write запрос
+5. **Валидация** — Form Request валидация в `NoteController@store` и `update`
+
+### Функциональность
+
+| Требование | Реализация |
+|-----------|-----------|
+| CRUD | Полный CRUD через NoteController с Policy авторизацией |
+| Поиск | GET параметр `q` в index методе (like запрос) |
+| Пагинация | Laravel Paginator (20 заметок на странице) |
+| Pin/Unpin | AJAX fetch запрос на `/notes/{id}/toggle-pin` без перезагрузки |
+| Цвета | 6 предустановок, выбор через Alpine.js |
+| Валидация | title (required, max 255), color (regex #rrggbb) |
+| UI | CSS Grid 3 колонки, Tailwind стилизация, responsive |
+| Аутентификация | Laravel Breeze (register, login, logout) |
+
+### Компромиссы
+
+1. **Нет real-time sync** — для простоты используется fetch, а не WebSocket
+2. **No dark mode** — темная тема отключена при установке Breeze
+3. **Нет пагинации для ajax** — pin/unpin не подгружает следующую страницу автоматически
+4. **SQLite для dev** — MySQL требует отдельной установки
+
+---
+
+## Git процесс
+
+Проект организован в 4 feature ветки для логического разделения:
+
+1. `feature/db-migration` — схема БД, модели, Policy
+2. `feature/note-crud` — контроллер, валидация, маршруты
+3. `feature/frontend-list` — страница списка, Alpine.js toggle-pin
+4. `feature/frontend-form` — формы создания/редактирования
+
+Каждая ветка → отдельный MR в `main`
+
+---
+
